@@ -1,0 +1,45 @@
+name: eliamini_family
+description: "ELIAMINI FAMILY - Mfumo wa M-Koba na SMS Automation"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # Mawasiliano na GitHub API / Pushbullet API / Resend API
+  http: ^1.2.1
+
+  # Usalama wa password (PBKDF2) na token za session
+  crypto: ^3.0.3
+  pointycastle: ^3.9.1
+
+  # Kuhifadhi secrets (GITHUB_TOKEN, n.k) kwa usalama kwenye simu
+  flutter_secure_storage: ^9.2.2
+
+  # State management nyepesi
+  provider: ^6.1.2
+
+  # Kuunda/kusoma CSV
+  csv: ^6.0.0
+
+  # Namba za random salama (salt, OTP-kama code)
+  uuid: ^4.4.0
+
+  # Kusoma PDF (Vodacom M-Koba Statement) - maneno na nafasi zake (x/y)
+  syncfusion_flutter_pdf: ^26.2.14
+
+  # Kuchagua faili la PDF kwenye simu
+  file_picker: ^8.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
