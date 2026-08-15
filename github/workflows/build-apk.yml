@@ -1,1 +1,58 @@
+name: Jenga APK (ELIAMINI FAMILY)
 
+# Inaendeshwa kila unapo-push kwenye 'main', au kwa mkono kupitia
+# tab ya "Actions" -> "Jenga APK (ELIAMINI FAMILY)" -> "Run workflow".
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: {}
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chukua msimbo (checkout)
+        uses: actions/checkout@v4
+
+      - name: Sakinisha Java (inahitajika na Android build)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Sakinisha Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+
+      # Kwa sababu 'android/' na 'ios/' hazipo kwenye repo hii (zinaachwa
+      # ili flutter iweze kutengeneza toleo jipya kila wakati), tunazitengeneza
+      # hapa moja kwa moja kabla ya kujenga APK.
+      - name: Tengeneza android/ na ios/ (flutter create)
+        run: |
+          if [ ! -d "android" ]; then
+            flutter create . --project-name eliamini_family --org com.eliamini --platforms=android
+          fi
+
+      - name: Ongeza ruhusa ya INTERNET kwenye AndroidManifest
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          if ! grep -q "android.permission.INTERNET" "$MANIFEST"; then
+            sed -i 's#<manifest xmlns:android="http://schemas.android.com/apk/res/android">#<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    <uses-permission android:name="android.permission.INTERNET"/>#' "$MANIFEST"
+          fi
+          cat "$MANIFEST"
+
+      - name: Pakua dependencies
+        run: flutter pub get
+
+      - name: Jenga APK (release)
+        run: flutter build apk --release
+
+      - name: Pandisha APK kama Artifact (unaweza kuipakua kwenye Actions tab)
+        uses: actions/upload-artifact@v4
+        with:
+          name: eliamini-family-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
